@@ -8,30 +8,31 @@ import com.intellij.openapi.editor.EditorFactory
 import com.intellij.openapi.editor.event.DocumentEvent
 import com.intellij.openapi.fileChooser.FileChooser
 import com.intellij.openapi.fileChooser.FileChooserDescriptor
-import com.intellij.openapi.progress.util.DispatchThreadProgressWindow
 import com.intellij.openapi.project.Project
 import com.intellij.openapi.ui.Messages
 import com.intellij.util.ui.JBDimension
 import java.awt.Dimension
 import java.awt.Toolkit
 import java.awt.datatransfer.DataFlavor
-import java.net.URL
-import javax.swing.*
+import javax.swing.JComponent
+import javax.swing.JMenuItem
+import javax.swing.JPopupMenu
 import javax.swing.text.JTextComponent
 
-class JsonInputDialog(classsName: String, private val project: Project) : Messages.InputDialog(
-    project,
-    "Please add your code here",
-    "Generate Test Code",
-    null,
-    "",
-    null
-) {
+class InputDialog(project: Project) :
+    Messages.InputDialog(
+        project,
+        "Please add your code here",
+        "Generate Test Code",
+        null,
+        "",
+        null
+    ) {
     private lateinit var jsonContentEditor: Editor
 
     init {
         setOKButtonText("Generate")
-        myField.text = classsName
+        myField.text = ""
     }
 
     override fun createNorthPanel(): JComponent? {
@@ -69,7 +70,6 @@ class JsonInputDialog(classsName: String, private val project: Project) : Messag
         }
     }
 
-
     private fun createJsonContentEditor(): Editor {
         val editorFactory = EditorFactory.getInstance()
         val document = editorFactory.createDocument("").apply {
@@ -93,7 +93,6 @@ class JsonInputDialog(classsName: String, private val project: Project) : Messag
         contentComponent.isFocusable = true
         contentComponent.componentPopupMenu = JPopupMenu().apply {
             add(createPasteFromClipboardMenuItem())
-            add(createRetrieveContentFromHttpURLMenuItem())
             add(createLoadFromLocalFileMenu())
         }
 
@@ -101,7 +100,6 @@ class JsonInputDialog(classsName: String, private val project: Project) : Messag
     }
 
     override fun createTextFieldComponent(): JTextComponent {
-
         return jTextInput(maxSize = JBDimension(10000, 35)) {
             document = NamingConventionDocument()
         }
@@ -115,25 +113,6 @@ class JsonInputDialog(classsName: String, private val project: Project) : Messag
                     jsonContentEditor.document.setText(transferable.getTransferData(DataFlavor.stringFlavor).toString())
                 }
             }
-        }
-    }
-
-    private fun createRetrieveContentFromHttpURLMenuItem() = JMenuItem("Retrieve content from Http URL").apply {
-        addActionListener {
-            val url = Messages.showInputDialog("URL", "Retrieve content from Http URL", null, null, null)
-            val p = DispatchThreadProgressWindow(false, project)
-            p.isIndeterminate = true
-            p.setRunnable {
-                try {
-                    val urlContent = URL(url).readText()
-                    runWriteAction {
-                        jsonContentEditor.document.setText(urlContent.replace("\r\n", "\n"))
-                    }
-                } finally {
-                    p.stop()
-                }
-            }
-            p.start()
         }
     }
 

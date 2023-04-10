@@ -32,7 +32,7 @@
                 description="Demo action group">
             <action
                     id="com.example.demoplugin.MyDemoAction"
-                    class="com.example.demoandroidplugin.MyPluginAction"
+                    class="com.example.demoandroidplugin.PluginAction"
                     text="Demo Action"
                     description="Demo action example"/>
             <add-to-group group-id="ToolsMenu" anchor="first"/>

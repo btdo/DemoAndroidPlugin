@@ -1,6 +1,6 @@
 package com.example.demoandroidplugin
 
-import com.example.demoandroidplugin.ui.JsonInputDialog
+import com.example.demoandroidplugin.ui.InputDialog
 import com.example.demoandroidplugin.utils.executeCouldRollBackAction
 import com.intellij.openapi.actionSystem.AnAction
 import com.intellij.openapi.actionSystem.AnActionEvent
@@ -10,36 +10,30 @@ import com.intellij.openapi.editor.Document
 import com.intellij.openapi.editor.Editor
 import com.intellij.openapi.project.Project
 import com.intellij.openapi.ui.Messages
-import java.net.URL
+import kotlinx.coroutines.runBlocking
 import kotlin.math.max
 
-class MyPluginAction : AnAction() {
-    override fun update(e: AnActionEvent) {
-        super.update(e)
-    }
+class PluginAction : AnAction() {
+    val pluginDependencyInjector by lazy { PluginDependencyInjectorImpl() }
 
     override fun actionPerformed(event: AnActionEvent) {
-        var jsonString = ""
         try {
-            val project = event.getData(PlatformDataKeys.PROJECT)
             val caret = event.getData(PlatformDataKeys.CARET)
             val editor = event.getData(PlatformDataKeys.EDITOR_EVEN_IF_INACTIVE)
-            val document = editor?.document ?: return
             if (couldNotInsertCode(editor)) return
-            var tempClassName = ""
-            val inputDialog = JsonInputDialog(tempClassName, project!!)
+            val document = editor?.document ?: return
+            val inputDialog = InputDialog(event.project!!)
             inputDialog.show()
-            val className = inputDialog.getClassName()
             val inputString = inputDialog.inputString
-            val json = if (inputString.startsWith("http")) {
-                URL(inputString).readText()
-            } else inputString
-            if (json.isEmpty()) {
+            if (inputString.isEmpty()) {
                 return
             }
-            jsonString = json
+            var outputString = ""
+            runBlocking {
+                outputString = pluginDependencyInjector.repository.query(inputString).toString()
+            }
             val offset = calculateOffset(caret, document)
-            insertKotlinCode(project!!, document, offset, jsonString)
+            insertKotlinCode(event.project!!, document, offset, outputString)
         } catch (e: Throwable) {
             Messages.showMessageDialog(
                 event.project,
