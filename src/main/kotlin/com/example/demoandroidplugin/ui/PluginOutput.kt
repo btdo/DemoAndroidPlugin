@@ -1,4 +1,4 @@
-package com.example.demoandroidplugin
+package com.example.demoandroidplugin.ui
 
 import com.example.demoandroidplugin.utils.executeCouldRollBackAction
 import com.intellij.openapi.editor.Caret

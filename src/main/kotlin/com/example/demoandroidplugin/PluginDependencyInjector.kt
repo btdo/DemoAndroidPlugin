@@ -1,6 +1,8 @@
 package com.example.demoandroidplugin
 
 import com.example.demoandroidplugin.ui.PluginInputDialog
+import com.example.demoandroidplugin.ui.PluginOutput
+import com.example.demoandroidplugin.ui.PluginOutputImpl
 import com.intellij.openapi.editor.Caret
 import com.intellij.openapi.editor.Document
 import com.intellij.openapi.project.Project

@@ -1,6 +1,5 @@
 package com.example.demoandroidplugin.ui
 
-import com.intellij.json.JsonFileType
 import com.intellij.openapi.application.ApplicationManager
 import com.intellij.openapi.application.runWriteAction
 import com.intellij.openapi.editor.Editor
@@ -8,6 +7,7 @@ import com.intellij.openapi.editor.EditorFactory
 import com.intellij.openapi.editor.event.DocumentEvent
 import com.intellij.openapi.fileChooser.FileChooser
 import com.intellij.openapi.fileChooser.FileChooserDescriptor
+import com.intellij.openapi.fileTypes.PlainTextFileType
 import com.intellij.openapi.project.Project
 import com.intellij.openapi.ui.Messages
 import com.intellij.util.ui.JBDimension
@@ -19,58 +19,40 @@ import javax.swing.JMenuItem
 import javax.swing.JPopupMenu
 import javax.swing.text.JTextComponent
 
-class PluginInputDialog(project: Project) :
+class PluginInputDialog(private val project: Project) :
     Messages.InputDialog(
         project,
-        "Please add your code here",
-        "Generate Test Code",
+        "Insert your code here",
+        "Unit Test Generator",
         null,
         "",
         null
     ) {
-    private lateinit var jsonContentEditor: Editor
+    private lateinit var inputEditor: Editor
 
     init {
         setOKButtonText("Generate")
         myField.text = ""
+        okAction.isEnabled = false
     }
 
     override fun createNorthPanel(): JComponent {
         return jHorizontalLinearLayout {
             jIcon("/icons/icon_json_input_dialog.png")
-            fixedSpace(5)
-            jVerticalLinearLayout {
-                alignLeftComponent {
-                    jLabel("Testing", 12f)
-                }
-                jHorizontalLinearLayout {
-                    jLabel("JSON Text: ", 14f)
-                    jLabel("Tips: you can use JSON string, http urls or local file just right click on text area", 12f)
-                    fillSpace()
-                }
-            }
+            fixedSpace(10)
+            jLabel("Insert your code here to generate", 14f)
         }
     }
 
     override fun createCenterPanel(): JComponent {
-        jsonContentEditor = createJsonContentEditor()
+        inputEditor = createInputEditor()
         myField = createTextFieldComponent()
         return jBorderLayout {
-            putCenterFill(jsonContentEditor.component)
-            bottomContainer {
-                jVerticalLinearLayout {
-                    fixedSpace(7)
-                    jHorizontalLinearLayout {
-                        jLabel("Class Name: ", 14f)
-                        add(myField)
-                    }
-                    fixedSpace(3)
-                }
-            }
+            putCenterFill(inputEditor.component)
         }
     }
 
-    private fun createJsonContentEditor(): Editor {
+    private fun createInputEditor(): Editor {
         val editorFactory = EditorFactory.getInstance()
         val document = editorFactory.createDocument("").apply {
             setReadOnly(false)
@@ -81,7 +63,7 @@ class PluginInputDialog(project: Project) :
             })
         }
 
-        val editor = editorFactory.createEditor(document, null, JsonFileType.INSTANCE, false)
+        val editor = editorFactory.createEditor(document, project, PlainTextFileType.INSTANCE, false)
 
         editor.component.apply {
             isEnabled = true
@@ -110,7 +92,7 @@ class PluginInputDialog(project: Project) :
             val transferable = Toolkit.getDefaultToolkit().systemClipboard.getContents(null)
             if (transferable.isDataFlavorSupported(DataFlavor.stringFlavor)) {
                 runWriteAction {
-                    jsonContentEditor.document.setText(transferable.getTransferData(DataFlavor.stringFlavor).toString())
+                    inputEditor.document.setText(transferable.getTransferData(DataFlavor.stringFlavor).toString())
                 }
             }
         }
@@ -121,29 +103,19 @@ class PluginInputDialog(project: Project) :
             FileChooser.chooseFile(FileChooserDescriptor(true, false, false, false, false, false), null, null) { file ->
                 val content = String(file.contentsToByteArray())
                 ApplicationManager.getApplication().runWriteAction {
-                    jsonContentEditor.document.setText(content.replace("\r\n", "\n"))
+                    inputEditor.document.setText(content.replace("\r\n", "\n"))
                 }
             }
         }
     }
 
-    /**
-     * get the user input class name
-     */
-    fun getClassName(): String {
-        return if (exitCode == 0) {
-            val name = myField.text.trim()
-            name.let { if (it.first().isDigit() || it.contains('$')) "`$it`" else it }
-        } else ""
-    }
-
-    override fun getInputString(): String = if (exitCode == 0) jsonContentEditor.document.text.trim() else ""
+    override fun getInputString(): String = if (exitCode == 0) inputEditor.document.text.trim() else ""
 
     override fun getPreferredFocusedComponent(): JComponent {
-        return jsonContentEditor.contentComponent
+        return inputEditor.contentComponent
     }
 
     private fun revalidate() {
-        okAction.isEnabled = myField.text.isNotEmpty()
+        okAction.isEnabled = inputEditor.document.text.isNotBlank()
     }
 }

@@ -20,8 +20,8 @@ class PluginAction : AnAction() {
             val inputDialog = dependencyInjector.provideInputDialog(event.project!!)
             inputDialog.show()
             val inputString = inputDialog.inputString ?: return
+            if (inputString.isBlank()) return
             var outputString = ""
-
             val repository = dependencyInjector.repository
             runBlocking {
                 outputString = repository.query(inputString).toString()
@@ -40,7 +40,6 @@ class PluginAction : AnAction() {
                 "Oops",
                 Messages.getInformationIcon()
             )
-            throw e
         }
     }
 
