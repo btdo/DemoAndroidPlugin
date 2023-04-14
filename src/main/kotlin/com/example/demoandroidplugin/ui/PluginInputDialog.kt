@@ -19,7 +19,7 @@ import javax.swing.JMenuItem
 import javax.swing.JPopupMenu
 import javax.swing.text.JTextComponent
 
-class InputDialog(project: Project) :
+class PluginInputDialog(project: Project) :
     Messages.InputDialog(
         project,
         "Please add your code here",
@@ -35,7 +35,7 @@ class InputDialog(project: Project) :
         myField.text = ""
     }
 
-    override fun createNorthPanel(): JComponent? {
+    override fun createNorthPanel(): JComponent {
         return jHorizontalLinearLayout {
             jIcon("/icons/icon_json_input_dialog.png")
             fixedSpace(5)
@@ -52,7 +52,7 @@ class InputDialog(project: Project) :
         }
     }
 
-    override fun createCenterPanel(): JComponent? {
+    override fun createCenterPanel(): JComponent {
         jsonContentEditor = createJsonContentEditor()
         myField = createTextFieldComponent()
         return jBorderLayout {
@@ -139,7 +139,7 @@ class InputDialog(project: Project) :
 
     override fun getInputString(): String = if (exitCode == 0) jsonContentEditor.document.text.trim() else ""
 
-    override fun getPreferredFocusedComponent(): JComponent? {
+    override fun getPreferredFocusedComponent(): JComponent {
         return jsonContentEditor.contentComponent
     }
 

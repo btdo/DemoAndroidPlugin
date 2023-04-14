@@ -6,6 +6,7 @@ import com.intellij.openapi.editor.EditorFactory
 import com.intellij.openapi.fileTypes.LanguageFileType
 import com.intellij.openapi.fileTypes.PlainTextFileType
 import com.intellij.openapi.util.IconLoader
+import com.intellij.ui.JBColor
 import com.intellij.ui.components.JBCheckBox
 import com.intellij.ui.components.JBLabel
 import com.intellij.ui.components.JBScrollPane
@@ -214,7 +215,7 @@ fun Any.jScrollPanel(
 fun Any.jLine(): JSeparator {
     val jLine = JSeparator(SwingConstants.CENTER).apply {
         maximumSize = JBDimension(10000, 10)
-        background = Color.GRAY
+        background = JBColor.GRAY
     }
     checkAddView(this, jLine)
     return jLine
