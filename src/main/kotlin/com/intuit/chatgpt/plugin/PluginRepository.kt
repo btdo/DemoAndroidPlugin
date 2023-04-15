@@ -1,7 +1,8 @@
-package com.example.demoandroidplugin
+package com.intuit.chatgpt.plugin
 
 import ChatGptRequest
-import com.example.demoandroidplugin.model.ChatGptResponse
+import com.intuit.chatgpt.plugin.model.ChatGptResponse
+import com.intuit.chatgpt.plugin.network.ChatGptApi
 
 interface PluginRepository {
     suspend fun query(query: String): ChatGptResponse

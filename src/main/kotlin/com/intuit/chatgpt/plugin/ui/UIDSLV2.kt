@@ -1,4 +1,4 @@
-package com.example.demoandroidplugin.ui
+package com.intuit.chatgpt.plugin.ui
 
 import com.intellij.openapi.application.runWriteAction
 import com.intellij.openapi.editor.Document

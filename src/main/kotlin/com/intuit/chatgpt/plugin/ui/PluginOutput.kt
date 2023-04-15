@@ -1,6 +1,6 @@
-package com.example.demoandroidplugin.ui
+package com.intuit.chatgpt.plugin.ui
 
-import com.example.demoandroidplugin.utils.executeCouldRollBackAction
+import com.intuit.chatgpt.plugin.utils.executeCouldRollBackAction
 import com.intellij.openapi.editor.Caret
 import com.intellij.openapi.editor.Document
 import com.intellij.openapi.project.Project

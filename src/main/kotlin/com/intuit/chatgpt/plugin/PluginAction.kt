@@ -1,4 +1,4 @@
-package com.example.demoandroidplugin
+package com.intuit.chatgpt.plugin
 
 import com.intellij.openapi.actionSystem.AnAction
 import com.intellij.openapi.actionSystem.AnActionEvent
@@ -22,7 +22,7 @@ class PluginAction : AnAction() {
             val inputString = inputDialog.inputString ?: return
             if (inputString.isBlank()) return
             var outputString = ""
-            val repository = dependencyInjector.repository
+            val repository = dependencyInjector.getRepository(dependencyInjector.pluginState(event.project!!))
             runBlocking {
                 outputString = repository.query(inputString).toString()
             }
@@ -36,10 +36,12 @@ class PluginAction : AnAction() {
         } catch (e: Throwable) {
             Messages.showMessageDialog(
                 event.project,
-                "Sorry, something went wrong...Blame Jacky",
+                "Sorry, something went wrong...${e.message} \n ${e.stackTraceToString()}",
                 "Oops",
                 Messages.getInformationIcon()
             )
+
+            throw e
         }
     }
 

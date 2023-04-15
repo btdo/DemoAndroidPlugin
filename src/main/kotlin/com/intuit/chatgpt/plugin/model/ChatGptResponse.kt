@@ -1,3 +1,3 @@
-package com.example.demoandroidplugin.model
+package com.intuit.chatgpt.plugin.model
 
 data class ChatGptResponse(val response: String)

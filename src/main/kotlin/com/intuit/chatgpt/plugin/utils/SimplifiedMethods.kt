@@ -1,4 +1,4 @@
-package com.example.demoandroidplugin.utils
+package com.intuit.chatgpt.plugin.utils
 
 import com.intellij.openapi.application.ApplicationManager
 import com.intellij.openapi.command.CommandProcessor
@@ -17,5 +17,5 @@ fun executeCouldRollBackAction(project: Project?, action: (Project?) -> Unit) {
         ApplicationManager.getApplication().runWriteAction {
             action.invoke(project)
         }
-    }, "insertKotlin", "JsonToKotlin")
+    }, "insertUnitTest", "CodeToUnitTest")
 }

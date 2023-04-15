@@ -1,7 +1,7 @@
-package com.example.demoandroidplugin
+package com.intuit.chatgpt.plugin.network
 
 import ChatGptRequest
-import com.example.demoandroidplugin.model.ChatGptResponse
+import com.intuit.chatgpt.plugin.model.ChatGptResponse
 import retrofit2.http.Body
 import retrofit2.http.POST
 

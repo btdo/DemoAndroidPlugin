@@ -1,4 +1,4 @@
-package com.example.demoandroidplugin.ui
+package com.intuit.chatgpt.plugin.ui
 
 import javax.swing.text.AttributeSet
 import javax.swing.text.PlainDocument
