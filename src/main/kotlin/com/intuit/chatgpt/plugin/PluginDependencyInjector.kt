@@ -50,7 +50,7 @@ class PluginDependencyInjectorImpl() : PluginDependencyInjector {
             .add(KotlinJsonAdapterFactory())
             .build()
         return Retrofit.Builder().client(httpClient)
-            .baseUrl(state.gptUrl)
+            .baseUrl(state.url)
             .addConverterFactory(MoshiConverterFactory.create(moshi)).build()
             .create(ChatGptApi::class.java)
     }

@@ -23,6 +23,7 @@
     <!-- Extension points defined by the plugin.
          Read more: https://plugins.jetbrains.com/docs/intellij/plugin-extension-points.html -->
     <extensions defaultExtensionNs="com.intellij">
+        <projectConfigurable instance="com.intuit.chatgpt.plugin.settings.PluginSettings"/>
         <projectService serviceImplementation="com.intuit.chatgpt.plugin.PluginPersistenceService"/>
     </extensions>
 

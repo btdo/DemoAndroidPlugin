@@ -10,6 +10,11 @@ import kotlinx.coroutines.runBlocking
 class PluginAction : AnAction() {
     private val dependencyInjector by lazy { PluginDependencyInjectorImpl() }
 
+    override fun update(e: AnActionEvent) {
+        val state = PluginPersistenceService.getInstance(e.project!!).state
+        e.presentation.isEnabled = state.apiKey.isNotBlank() && state.model.isNotBlank() && state.url.isNotBlank()
+    }
+
     override fun actionPerformed(event: AnActionEvent) {
         try {
             val caret = event.getData(PlatformDataKeys.CARET)
