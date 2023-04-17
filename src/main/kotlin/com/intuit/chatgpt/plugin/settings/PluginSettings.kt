@@ -2,15 +2,14 @@ package com.intuit.chatgpt.plugin.settings
 
 import com.intellij.openapi.options.Configurable
 import com.intellij.openapi.project.Project
-import com.intellij.ui.dsl.builder.panel
 import com.intuit.chatgpt.plugin.PluginPersistenceService
 import com.intuit.chatgpt.plugin.model.PluginState
+import com.intuit.chatgpt.plugin.ui.*
 import javax.swing.JComponent
 import javax.swing.JPanel
-import javax.swing.JPasswordField
-import javax.swing.JTextField
 import javax.swing.event.DocumentEvent
 import javax.swing.event.DocumentListener
+import javax.swing.text.JTextComponent
 
 class PluginSettings(private val project: Project) : Configurable, DocumentListener {
     private var modified = false
@@ -18,39 +17,44 @@ class PluginSettings(private val project: Project) : Configurable, DocumentListe
         PluginPersistenceService.getInstance(project).state
     }
 
-    private val urlField: JTextField = JTextField()
-    private val apiKeyField: JPasswordField = JPasswordField()
-    private val modelField: JTextField = JTextField()
+    private val urlField = createTextFieldComponent()
+    private val apiKeyField = createTextFieldComponent()
+    private val modelField = createTextFieldComponent()
 
-    private val panel: JPanel = panel {
-        row("ChatGPT Url") { urlField }
-        row("API Key") { apiKeyField }
-        row("model") { modelField }
+    private fun createTextFieldComponent(): JTextComponent {
+        return jTextInput {
+            document.addDocumentListener(this@PluginSettings)
+        }
+    }
+
+    private val panel: JPanel = jBorderLayout {
+        jVerticalLinearLayout {
+            jHorizontalLinearLayout {
+                jLabel("url: ", 14f)
+                add(urlField)
+            }
+            jHorizontalLinearLayout {
+                jLabel("apiKey: ", 14f)
+                add(apiKeyField)
+            }
+            jHorizontalLinearLayout {
+                jLabel("model: ", 14f)
+                add(modelField)
+            }
+        }
     }
 
     override fun createComponent(): JComponent? {
-        apiKeyField.apply {
-            text = state.apiKey
-            document.addDocumentListener(this@PluginSettings)
-        }
-
-        urlField.apply {
-            text = state.url
-            document.addDocumentListener(this@PluginSettings)
-        }
-
-        modelField.apply {
-            text = state.model
-            document.addDocumentListener(this@PluginSettings)
-        }
-
+        urlField.text = state.url
+        apiKeyField.text = state.apiKey
+        modelField.text = state.model
         return panel
     }
 
     override fun isModified(): Boolean  = modified
 
     override fun apply() {
-        state.apiKey = String(apiKeyField.password)
+        state.apiKey = apiKeyField.text
         state.url = urlField.text
         state.model = modelField.text
         PluginPersistenceService.getInstance(project).loadState(state)

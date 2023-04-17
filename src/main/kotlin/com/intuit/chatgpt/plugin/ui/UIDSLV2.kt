@@ -9,6 +9,7 @@ import com.intellij.openapi.util.IconLoader
 import com.intellij.ui.JBColor
 import com.intellij.ui.components.JBCheckBox
 import com.intellij.ui.components.JBLabel
+import com.intellij.ui.components.JBPasswordField
 import com.intellij.ui.components.JBScrollPane
 import com.intellij.ui.components.JBTextField
 import com.intellij.util.ui.JBDimension
@@ -165,6 +166,23 @@ fun Any.jTextInput(
     }
     checkAddView(this, jTextInput)
     return jTextInput
+}
+
+fun Any.jPasswordInput(
+    initText: String = "",
+    enabled: Boolean = true,
+    maxSize: JBDimension = JBDimension(10000, 30),
+    init: JPasswordField.() -> Unit = {}
+): JPasswordField {
+    val jbPasswordField = JBPasswordField()
+    with(jbPasswordField) {
+        init()
+        text = initText
+        maximumSize = maxSize
+        isEnabled = enabled
+    }
+    checkAddView(this, jbPasswordField)
+    return jbPasswordField
 }
 
 
