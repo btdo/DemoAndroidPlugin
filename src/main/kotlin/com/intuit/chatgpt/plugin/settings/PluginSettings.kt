@@ -2,9 +2,11 @@ package com.intuit.chatgpt.plugin.settings
 
 import com.intellij.openapi.options.Configurable
 import com.intellij.openapi.project.Project
+import com.intellij.util.ui.JBUI
 import com.intuit.chatgpt.plugin.PluginPersistenceService
 import com.intuit.chatgpt.plugin.model.PluginState
 import com.intuit.chatgpt.plugin.ui.*
+import javax.swing.Box
 import javax.swing.JComponent
 import javax.swing.JPanel
 import javax.swing.event.DocumentEvent
@@ -30,7 +32,7 @@ class PluginSettings(private val project: Project) : Configurable, DocumentListe
     private val panel: JPanel = jBorderLayout {
         jVerticalLinearLayout {
             jHorizontalLinearLayout {
-                jLabel("url: ", 14f)
+                jLabel("url:        ", 14f)
                 add(urlField)
             }
             jHorizontalLinearLayout {
@@ -38,7 +40,7 @@ class PluginSettings(private val project: Project) : Configurable, DocumentListe
                 add(apiKeyField)
             }
             jHorizontalLinearLayout {
-                jLabel("model: ", 14f)
+                jLabel("model:  ", 14f)
                 add(modelField)
             }
         }
